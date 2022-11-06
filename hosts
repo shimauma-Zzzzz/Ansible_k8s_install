@@ -1,0 +1,13 @@
+[c1_controllers]
+k8sctl0
+
+[c1_workers]
+k8swkr0
+k8swkr1
+k8swkr2
+
+[c1_servers]
+k8sctl0
+k8swkr0
+k8swkr1
+k8swkr2

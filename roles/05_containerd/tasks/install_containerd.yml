@@ -1,0 +1,41 @@
+---
+- name: download containerd dnf repository files
+  get_url: url="https://download.docker.com/linux/fedora/docker-ce.repo" dest=/etc/yum.repos.d
+
+- name: dnf install containerd
+  yum:
+    name: "{{packages}}"
+  vars:
+    packages:
+      - yum-utils
+      - device-mapper-persistent-data
+      - lvm2
+      - containerd.io
+
+- name: create /etc/containerd
+  file: path=/etc/containerd state=directory owner=root group=root mode=0755
+
+- name: create default config for containerd
+  shell: |
+    containerd config default > /etc/containerd/config.toml
+
+#- name: use systemd cgroup driver for containerd
+#  replace:
+#    dest: /etc/containerd/config.toml
+#    regexp: 'systemd_cgroup = false'
+#    replace: 'systemd_cgroup = true'
+##    insertafter: '^.*io.containerd.runtime.v1.linux'
+##    line: '    systemd_cgroup = true'
+
+- name: use systemd cgroup driver for containerd
+  lineinfile:
+    path: /etc/containerd/config.toml
+    insertafter: '^.*io.containerd.runtime.v1.linux'
+    line: '    systemd_cgroup = true'
+
+- name: restart containerd
+  systemd:
+    name: containerd.service
+    state: restarted
+    daemon_reload: yes
+    enabled: yes

@@ -1,0 +1,16 @@
+---
+#- name: Delete Calico
+#  shell: kubectl delete -f /data/tools/ansible/k8s_1.21/roles/08_calico/files/calico.yaml
+
+- name: Reset the kubernetes cluster
+  shell: kubeadm reset -f && iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+
+- name: Delete directories
+  file:
+    path: '{{ item }}'
+    state: absent
+  loop:
+    - "~/.kube"
+    - "/etc/cni/net.d"
+
+

@@ -1,0 +1,13 @@
+---
+- name: set kubelet extra args
+  lineinfile:
+    path: /etc/sysconfig/kubelet
+    regexp: '^KUBELET_EXTRA_ARGS=$'
+    line: KUBELET_EXTRA_ARGS=--cgroup-driver=systemd
+
+- name: enable kubelet.service
+  systemd:
+    name: kubelet.service
+    state: started
+    daemon_reload: yes
+    enabled: yes

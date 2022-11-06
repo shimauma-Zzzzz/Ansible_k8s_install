@@ -1,0 +1,22 @@
+- name: deploy k8s common components
+  hosts: c1_servers
+  become: yes
+  roles:
+    - 01_common
+    - 02_iptables
+    - 03_kernel_params
+    - 04_swapoff
+    - 05_containerd
+    - 06_k8s_install
+#    - 07_cleanup
+- name: deploy k8s controller
+  hosts: c1_controllers
+  become: yes
+  roles:
+    - 08_k8s_mkcluster
+    - 09_calico
+- name: deploy k8s workers
+  hosts: c1_workers
+  become: yes
+  roles:
+    - 10_k8s_join

@@ -1,0 +1,38 @@
+---
+#- name: Delete Calico
+#  shell: kubectl delete -f /data/tools/ansible/k8s_1.21/roles/08_calico/files/calico.yaml
+
+- name: Reset the kubernetes cluster
+  shell: kubeadm reset -f && iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+
+- name: Initialize the kubernetes cluster using kubeadm
+#  shell: kubeadm init --pod-network-cidr={{ pod_network_cidr }} --cri-socket=/run/containerd/containerd.sock
+  shell: kubeadm init --pod-network-cidr={{ pod_network_cidr }}
+  register: kubeadm_init_result
+
+- name: kubeadm init stdout
+  debug:
+    msg: "{{ kubeadm_init_result.stdout }}"
+
+- name: kubeadm init stderr
+  debug:
+    msg: "{{ kubeadm_init_result.stderr }}"
+
+- name: Delete .kube directory
+  file:
+    path: "~/.kube/"
+    state: absent
+
+- name: Create Kubernetes config directory
+  file:
+    path: "~/.kube/"
+    state: directory
+
+- name: Copy admin.conf to home directory
+  copy:
+    src: /etc/kubernetes/admin.conf
+    dest: "~/.kube/config"
+    owner: root
+    group: root
+    mode: 0755
+    remote_src: true

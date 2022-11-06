@@ -1,0 +1,32 @@
+- name: Change to Cgroupv1
+  shell: "grubby --update-kernel ALL --args systemd.unified_cgroup_hierarchy=0"
+
+- name: stop/disable systemd-resolved
+  systemd:
+    name: systemd-resolved
+    state: stopped
+    enabled: false
+
+- name: DNS in NetworkManager.conf
+  lineinfile:
+    path: /etc/NetworkManager/NetworkManager.conf
+    regexp: '^dns=default'
+    insertafter: '^[main]'
+    line: dns=default
+
+- name: unlink resolv.conf 
+  file:
+    path: /etc/resolv.conf
+    state: absent
+
+- name: make empty resolv.conf
+  file:
+    path: /etc/resolv.conf
+    state: touch
+#  notify:
+#    - restart server
+
+- name: restart NetworkManager
+  systemd:
+    name: NetworkManager
+    state: restarted

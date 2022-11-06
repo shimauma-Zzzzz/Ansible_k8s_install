@@ -1,0 +1,27 @@
+---
+- name: Reset the kubernetes cluster
+  shell: kubeadm reset -f && iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+
+#- name: Delete /etc/kubernetes
+#  file:
+#    path: /etc/kubernetes
+#    state: absent
+
+- name: Copy the join command to server location
+  copy:
+    src: join-command
+    dest: /tmp/join-command.sh
+    mode: 0777
+
+- name: Join the node to cluster
+  shell: |
+    sh /tmp/join-command.sh
+  register: join_result
+
+- name: join command stdout
+  debug:
+    msg: "{{ join_result.stdout }}"
+
+- name: join command stderr
+  debug:
+    msg: "{{ join_result.stderr }}"

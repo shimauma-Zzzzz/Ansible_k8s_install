@@ -1,0 +1,8 @@
+---
+- name: copy k8s_modprobe.conf into /etc/modules-load.d
+  copy:
+    src: k8s_modprobe.conf
+    dest: /etc/modules-load.d
+    owner: root
+    group: root
+    mode: 0644

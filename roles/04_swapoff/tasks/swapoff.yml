@@ -1,0 +1,23 @@
+---
+- name: Disable SWAP since kubernetes can't work with swap enabled (1/2)
+  shell: |
+    swapoff -a
+  register: result
+
+- name: swap Debug message
+  debug:
+    msg: "{{ result.stdout }}"
+
+- name: Disable SWAP in fstab since kubernetes can't work with swap enabled (2/2)
+  replace:
+    path: /etc/fstab
+    regexp: '^([^#].*?\sswap\s.*)$'
+    replace: '# \1'
+
+- name: make empty zram-generator.conf
+  ansible.builtin.file:
+    path: /etc/systemd/zram-generator.conf
+    owner: root
+    group: root
+    mode: 644
+    state: touch

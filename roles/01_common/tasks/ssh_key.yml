@@ -1,0 +1,9 @@
+---
+- name: create /root/.ssh
+  file: path=/root/.ssh state=directory owner=root group=root mode=0755
+
+- name: copy publickey
+  copy: src=public.j2 dest=/root/.ssh/authorized_keys mode=600
+
+- name: copy privatekey
+  copy: src=private.j2 dest=/root/.ssh/id_rsa mode=600

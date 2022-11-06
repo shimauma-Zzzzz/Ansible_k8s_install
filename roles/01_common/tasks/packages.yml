@@ -1,0 +1,11 @@
+---
+- name: dnf install packages
+  yum:
+    name: "{{packages}}"
+  vars:
+    packages:
+      - nfs-utils
+      - bash-completion
+      - tar
+      - iptables-legacy
+      - iproute-tc

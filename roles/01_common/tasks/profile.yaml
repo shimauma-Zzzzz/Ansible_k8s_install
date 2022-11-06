@@ -1,0 +1,10 @@
+---
+- name: add settings into .bash_profile
+  lineinfile:
+    dest=~/.bash_profile backup=yes
+    line='{{ item }}'
+  with_items:
+    - set -o vi
+    - alias k=kubectl
+    - source <( k completion bash )
+    - complete -F __start_kubectl k

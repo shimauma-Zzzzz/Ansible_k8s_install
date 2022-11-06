@@ -1,0 +1,7 @@
+---
+- name: disable firewalld
+  systemd:
+    name: firewalld.service
+    state: stopped
+    daemon_reload: yes
+    enabled: no

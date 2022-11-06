@@ -1,0 +1,4 @@
+---
+- import_tasks: install_modules.yml
+- import_tasks: k8s_modprobe.yml
+- import_tasks: k8s_netfilter.yml

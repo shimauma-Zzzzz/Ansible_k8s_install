@@ -1,0 +1,5 @@
+password.yml
+password.yml.org
+group_vars/all.yml
+roles/01_common/files/public.j2
+roles/01_common/files/private.j2
